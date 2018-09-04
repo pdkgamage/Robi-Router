@@ -1,0 +1,15 @@
+How to run
+==========
+
+1. run spring boot application.
+when application get start database and tables get created.
+
+2. how to save profile
+curl -X POST
+  http://localhost:8080/profileManager/add
+  -H 'Cache-Control: no-cache'
+  -H 'Content-Type: application/json'
+  -H 'Postman-Token: dfb9d87f-90dd-4761-b982-804bf11cb951'
+  -d '{"name":"pradeep","username":"pradeep","password":"Founder","consumerKey":"0MWZ1UkGa75jjq7BqK8NsAhwBboa","consumerSecret":"IiowkCp6wQgHabWLUsTeOQtpWJwa","scope":"default","tokenType":"Bearer","expiresIn":3600,"refreshToken":"444d27c1-48e4-3889-9c2e-3dd7fae93101","accessToken":"4c0c5812-4d2b-3724-8161-da9e50cf9985","generateTokenUrl":"https://api.robi.com.bd/token","refreshTokenUrl":"https://api.robi.com.bd/token","withScope":"PRODUCTION","tokenCreatedAt":"2018-08-08"}'
+
+3.
