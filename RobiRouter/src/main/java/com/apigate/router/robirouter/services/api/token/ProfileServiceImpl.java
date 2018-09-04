@@ -3,21 +3,25 @@ package com.apigate.router.robirouter.services.api.token;
 import com.apigate.router.robirouter.dto.GeneratedToken;
 import com.apigate.router.robirouter.jpa.RobiRepository;
 import com.apigate.router.robirouter.model.Profile;
+import com.google.gson.Gson;
 import org.apache.http.HttpStatus;
-import org.apache.http.HttpVersion;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 
 @Service
@@ -41,12 +45,6 @@ public class ProfileServiceImpl implements ProfileService {
         try
          {
 
-            /*HttpClientBuilder cb = HttpClientBuilder.create();
-            SSLContextBuilder sslcb = new SSLContextBuilder();
-            sslcb.loadTrustMaterial(KeyStore.getInstance(KeyStore.getDefaultType()), new TrustSelfSignedStrategy());
-            cb.setSslcontext(sslcb.build());
-            CloseableHttpClient httpclient = cb.build();*/
-
             CloseableHttpClient httpClient = HttpClients.createDefault();
             RequestConfig requestConfig = RequestConfig.custom()
                     .setSocketTimeout(5000)
@@ -56,19 +54,18 @@ public class ProfileServiceImpl implements ProfileService {
 
             HttpPost httpPost = new HttpPost(profile.getRefreshTokenUrl());
             httpPost.setConfig(requestConfig);
-            HttpClientContext context = HttpClientContext.create();
-            context.setAttribute("http.protocol.version", HttpVersion.HTTP_1_1);
-            context.setAttribute("grant_type","password");
-            context.setAttribute("username",profile.getUsername());
-            context.setAttribute("password",profile.getPassword());
-            context.setAttribute("scope",profile.getWithScope());
+
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("grant_type", "password"));
+            params.add(new BasicNameValuePair("username", profile.getUsername()));
+            params.add(new BasicNameValuePair("password", profile.getPassword()));
+            params.add(new BasicNameValuePair("scope", profile.getWithScope()));
+            httpPost.setEntity(new UrlEncodedFormEntity(params));
             String basicToken = Base64.getEncoder().encodeToString((profile.getConsumerKey()+":"+profile.getConsumerSecret()).getBytes());
-            context.setAttribute("Authorization","Bearer "+basicToken);
-            context.setAttribute("content-type","application/x-www-form-urlencoded");
+            httpPost.setHeader("Authorization", "Bearer "+basicToken);
+            httpPost.setHeader("content-type", "application/x-www-form-urlencoded");
 
-            
-
-            CloseableHttpResponse closeableHttpResponse = httpClient.execute(httpPost, context);
+            CloseableHttpResponse closeableHttpResponse = httpClient.execute(httpPost);
 
             int statusCode = closeableHttpResponse.getStatusLine().getStatusCode();
 
@@ -83,9 +80,10 @@ public class ProfileServiceImpl implements ProfileService {
                buf.append(output);
             }
 
-            String content = buf.toString();
+            Gson gson = new Gson();
+            GeneratedToken generatedToken = gson.fromJson(buf.toString(), GeneratedToken.class);
 
-
+            System.out.print(generatedToken);
          }
          catch(Exception ex)
          {
@@ -115,4 +113,5 @@ public class ProfileServiceImpl implements ProfileService {
    public Profile create(Profile profile) {
       return robiRepository.save(profile);
    }
+
 }
