@@ -26,13 +26,15 @@ public class ProfileController {
 
     @RequestMapping(path = "add")
 
-    public ResponseEntity saveProfile(@RequestBody Profile profile) {
+    public ResponseEntity saveProfile(@RequestBody Profile profile) throws InterruptedException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         UUID correlationID = UUID.randomUUID();
         logger.info("Received profile to correlation id {}  {} ", profile);
 
         Profile savedProfile = profileService.create(profile);
+        Thread.sleep(1000);
+        profileService.generateAccessTokenByRefresh("pradeepTesting");
         return new ResponseEntity<>(new Gson().toJson(savedProfile),headers, HttpStatus.CREATED);
     }
 

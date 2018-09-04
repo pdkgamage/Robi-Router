@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RobiRepository extends JpaRepository<Profile, Long> {
 
-    @Query(value = "SELECT * FROM PROFILE WHERE USERNAME = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM profile WHERE username = ?1", nativeQuery = true)
     Profile findByUsername(String username);
 
 }

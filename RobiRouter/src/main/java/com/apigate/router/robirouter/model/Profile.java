@@ -13,7 +13,7 @@ public class Profile {
     private Long id;
     @Column(name = "name")
     public String name;
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     public String username;
     @Column(name = "password")
     public String password;
