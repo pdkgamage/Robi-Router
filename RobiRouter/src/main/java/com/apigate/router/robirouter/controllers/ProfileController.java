@@ -34,7 +34,7 @@ public class ProfileController {
 
         Profile savedProfile = profileService.create(profile);
         Thread.sleep(1000);
-        profileService.generateAccessTokenByRefresh("pradeepTesting");
+        profileService.generateAccessTokenByPassword("pradeepTesting");
         return new ResponseEntity<>(new Gson().toJson(savedProfile),headers, HttpStatus.CREATED);
     }
 
