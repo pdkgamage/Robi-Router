@@ -47,6 +47,12 @@ public class GeneratedToken {
     public void setRefresh_token(String refresh_token) {
         this.refresh_token = refresh_token;
     }
+
+
+    @Override
+    public String toString() {
+        return "Access Token-->"+ access_token + ",  Refresh Token-->"+ refresh_token+ ", Scope-->"+ scope+ ", Expire in-->"+expires_in+ ", Token Type-->"+token_type;
+    }
 }
 
 
